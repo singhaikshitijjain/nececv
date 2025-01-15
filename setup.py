@@ -2,8 +2,8 @@ from setuptools import setup, find_packages
 
 setup(
     name="nececv",
-    version="0.1.1",
-    description="Advanced edge detection and object recognition using VGG16 and OpenCV.",
+    version="0.2.2",
+    description="Your existing nececv package with added generative models",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     author="Singhai Kshitij Jain",

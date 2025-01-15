@@ -1,12 +1,12 @@
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageFilter
 from tensorflow.keras.applications import VGG16
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.applications.vgg16 import preprocess_input, decode_predictions
 import cv2  # OpenCV for advanced edge detection
 import matplotlib.pyplot as plt
 
-class nececv:
+class PreEdge:
     def __init__(self):
         # Load the VGG16 model pre-trained on ImageNet
         self.model = VGG16(weights="imagenet")
@@ -21,25 +21,25 @@ class nececv:
         return img_array
 
     # Function to calculate Sobel edge density
-    def calculate_sobel_density(self, image_path):
-        # Read the image in grayscale
-        img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    def calculate_sobel_density(self,image_path):
+    # Open the image and convert it to grayscale
+        image = Image.open(image_path).convert("L")  # "L" mode is for grayscale
     
     # Define the custom kernel for edge detection
-        custom_kernel = np.array([[-1, -1, -1],
-                                  [-1,  8, -1],
-                                  [-1, -1, -1]])
+        kernel = [-1, -1, -1, 
+                -1,  8, -1, 
+                -1, -1, -1]
     
     # Apply the custom kernel to the image
-        sobel_edges = cv2.filter2D(img, cv2.CV_64F, custom_kernel)
+        filtered_image = image.filter(ImageFilter.Kernel(size=(3, 3), kernel=kernel, scale=1))
     
-    # Normalize the Sobel edge image
-        sobel_edges = cv2.normalize(sobel_edges, None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8)
+    # Convert the filtered image to a NumPy array
+        filtered_array = np.array(filtered_image)
     
     # Calculate edge density (fraction of non-zero pixels)
-        edge_density = np.count_nonzero(sobel_edges) / sobel_edges.size
+        edge_density = np.count_nonzero(filtered_array) / filtered_array.size
     
-        return sobel_edges, edge_density
+        return filtered_image, edge_density
 
     # Function to apply epsilon learning for enhanced edge detection
     def apply_epsilon_learning(self, image_path, threshold1, threshold2, epsilon, iterations, object_name=None):
@@ -93,7 +93,7 @@ class nececv:
         if edge_image is not None:
         # Display edge image
             if edge_image == "Canny":
-                edge_image_output = nececv.generate_edge_image(image_path, predictions, epsilon, iterations)
+                edge_image_output = nececv.generate_edge_image(self,image_path, predictions, epsilon, iterations)
                 ax[plot_idx].imshow(edge_image_output, cmap="gray")
                 ax[plot_idx].set_title(f"Canny Edge Detection\nEpsilon: {epsilon}, Iterations: {iterations}")
                 ax[plot_idx].axis("off")
