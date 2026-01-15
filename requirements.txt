@@ -3,3 +3,5 @@ Pillow
 tensorflow
 opencv-python
 matplotlib
+scipy
+scikit-learn

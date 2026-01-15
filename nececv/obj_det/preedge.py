@@ -93,7 +93,7 @@ class PreEdge:
         if edge_image is not None:
         # Display edge image
             if edge_image == "Canny":
-                edge_image_output = nececv.generate_edge_image(self,image_path, predictions, epsilon, iterations)
+                edge_image_output = PreEdge.generate_edge_image(self,image_path, predictions, epsilon, iterations)
                 ax[plot_idx].imshow(edge_image_output, cmap="gray")
                 ax[plot_idx].set_title(f"Canny Edge Detection\nEpsilon: {epsilon}, Iterations: {iterations}")
                 ax[plot_idx].axis("off")
